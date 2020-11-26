@@ -16,8 +16,8 @@ Xe = np.concatenate((xe, np.ones((N, 1))), axis=1)
 # TODO: hacer la funcion de carga de parametros
 
 # Corriendo entrenamiento
-X = config_swarm(xe)
-w1, w2, MSE = qpso(Xe, ye, X)
+X, pBest, pFitness, gBest, gFitness, wBest, Alfa = config_swarm(xe)
+w1, w2, MSE = qpso(Xe, ye, X, pBest, pFitness, gBest, gFitness, wBest, Alfa)
 
 print(w1, w2, MSE)
 #save('peso', w1, w2, MSE)

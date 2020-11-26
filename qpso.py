@@ -21,55 +21,59 @@ def config_swarm(xe):
 
     N, D = xe.shape
     D += 1
-    print("[config_swarm] D", D)
     X = ini_swarm(Np, Nh, D)
     N, Dim = X.shape
     Dim += 2
     pBest = np.zeros((Np, Dim))
     pFitness = np.ones((1, Np)) * inf
+    gBest = np.zeros((1, Dim))
     gFitness = inf
     wBest = np.zeros((1, Nh))
 
     Alfa = (0.95 - 0.2) * (MaxIter - np.array(range(1, MaxIter + 1))) \
             / MaxIter + 0.2 # Cofft
 
-    return X
+    return X, pBest, pFitness, gBest, gFitness, wBest, Alfa
 
 def mlp_pinv(H, ye, C):
     N, L = H.shape
-    print("[mlp_pinv] H.shape", H.shape)
     H_ = np.transpose(H)
     yh = ye.dot(H)
-    print("[mlp_pinv] ye.shape", ye.shape)
-    print("[mlp_pinv] yh.shape", yh.shape)
-    print("[mlp_pinv] H_.dot(H).shape", H_.dot(H).shape)
     hh = (H_.dot(H) + np.eye(L) / C)
     w2 = yh.dot(np.linalg.pinv(hh))
 
-    print("[mlp_pinv] w2.shape", w2.shape)
     return w2
+
+def mse(ye, ze):
+    return ((ye - ze)**2).mean()
 
 def fitness(Xe, ye, Nh, X, Cpinv):
     N, D = Xe.shape
     Np = configs.Np
 
-    for i in range(Np):
-        # print("[fitness] X.shape", X.shape)
-        # print("[fitness] X[i,:].shape", X[i,:].shape)
-        p = X[i,:]
-        # print("[fitness] D", D)
-        w1 = np.reshape(p, (D, Nh))
-        # print("[fitness] w1.shape", w1.shape)
-        H = activation(Xe, w1)
-        print("[fitness] H.shape", H.shape)
-        W2[i,:] = mlp_pinv(H, ye, configs.C)
-        ze = W2[i,:] * H
-        MSE[i] = sqrt(mse(ye, ze)) # Error cuadratico medio
+    # Shape (Np)
+    W2 =  np.zeros((Np, Nh)) # TODO: inicializar los pesos
 
+    # Posiblemente dejemos la cagá
+    MSE = np.full(Np, -1)
+
+    for i in range(Np):
+        p = X[i,:]
+        w1 = np.reshape(p, (D, Nh))
+        H = activation(Xe, w1)
+        W2[i,:] = mlp_pinv(H, ye, configs.C)
+        ze = W2[i,:].dot(np.transpose(H))
+
+        
+        MSE[i] = np.sqrt(mse(ye, ze)) # Error cuadratico medio
+
+    # FIXME: esto está mal porque da cero siempre
     return MSE, W2
 
 def upd_particle(X, pBest, pFitness, gBest, gFitness, new_pFitness, new_beta, wBest):
-    idx = find(new_pFitness < pFitness) # FIXME: arreglar esto... hacer funcion find?
+    idx = np.where(new_pFitness < pFitness) # FIXME: arreglar esto... hacer funcion find?
+    
+    print("new_pFitness", new_pFitness, "\npFitness", pFitness)
     if len(idx) > 0: # Si es que se encontró una particula mejor
         pFitness[idx] = new_pFitness[idx]
         pBest[idx,:] = X[idx,:]
@@ -83,7 +87,7 @@ def upd_particle(X, pBest, pFitness, gBest, gFitness, new_pFitness, new_beta, wB
 
     return pBest, pFitness, gBest, gFitness, wBest
 
-def qpso(Xe, ye, X):
+def qpso(Xe, ye, X, pBest, pFitness, gBest, gFitness, wBest, Alfa):
     Np      = configs.Np
     Nh      = configs.Nh
     MaxIter = configs.MaxIter
@@ -91,11 +95,9 @@ def qpso(Xe, ye, X):
     # Inicializando MSE
     MSE = np.full(MaxIter, -1)
 
-    # print("[qpso] Xe.shape", Xe.shape)
     N, D = Xe.shape
 
     for iter_ in range(MaxIter):
-        # print("[qpso] iter_", iter_)
         new_pFitness, new_beta = fitness(Xe, ye, Nh, X, configs.C)
         pBest, pFitness, gBest, gFitness, wBest = upd_particle(X, pBest,
             pFitness, gBest, gFitness, new_pFitness, new_beta, wBest)
