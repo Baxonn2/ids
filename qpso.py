@@ -10,7 +10,6 @@ def ini_swarm(Np, Nh, D):
     for i in range(Np):
         wh = rand_W(Nh, D)
         X[i:] = np.reshape(wh, (1, Nh*D)) #? Que es esto Puede que falta una coma
-
     return X
 
 def config_swarm(xe):
@@ -23,7 +22,6 @@ def config_swarm(xe):
     D += 1
     X = ini_swarm(Np, Nh, D)
     N, Dim = X.shape
-    Dim += 2
     pBest = np.zeros((Np, Dim))
     pFitness = np.ones((1, Np)) * inf
     gBest = np.zeros((1, Dim))
@@ -55,7 +53,7 @@ def fitness(Xe, ye, Nh, X, Cpinv):
     W2 =  np.zeros((Np, Nh)) # TODO: inicializar los pesos
 
     # Posiblemente dejemos la cagá
-    MSE = np.full(Np, -1)
+    MSE = np.full(Np, -1.0)
 
     for i in range(Np):
         p = X[i,:]
@@ -64,7 +62,6 @@ def fitness(Xe, ye, Nh, X, Cpinv):
         W2[i,:] = mlp_pinv(H, ye, configs.C)
         ze = W2[i,:].dot(np.transpose(H))
 
-        
         MSE[i] = np.sqrt(mse(ye, ze)) # Error cuadratico medio
 
     # FIXME: esto está mal porque da cero siempre
@@ -74,15 +71,19 @@ def upd_particle(X, pBest, pFitness, gBest, gFitness, new_pFitness, new_beta, wB
     idx = np.where(new_pFitness < pFitness) # FIXME: arreglar esto... hacer funcion find?
     
     print("new_pFitness", new_pFitness, "\npFitness", pFitness)
-    if len(idx) > 0: # Si es que se encontró una particula mejor
-        pFitness[idx] = new_pFitness[idx]
-        pBest[idx,:] = X[idx,:]
+    print("idx[0].size", idx[0].size)
+    if idx[0].size > 0: # Si es que se encontró una particula mejor
+        for i, j in zip(idx[0], idx[1]):
+            pFitness[i,j] = new_pFitness[j]
+            print("pBest.shape", pBest.shape)
+            print("X.shape", X.shape)
+            pBest[j,:] = X[j,:]
 
     new_gFitness, idx = min_(pFitness)  # TODO: programar esta funcion para encontrar el menor Fitnees (Retorna su valor y el indice)
 
     if new_gFitness < gFitness:
         gFitness = new_gFitness
-        gBest = pBest[idx, :]  
+        gBest = pBest[idx, :]
         wBest = newBeta[idx, :]
 
     return pBest, pFitness, gBest, gFitness, wBest

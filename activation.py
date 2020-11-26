@@ -12,7 +12,11 @@ def activation(x, w):
         retorna el valor de salida del nodo o neurona
     """
     z = x.dot(w);
-    H = 1./(1+exp(-z))
+    # print("\nz")
+    # print(z)
+    H = 1/(1+exp(-z))
+    # print("\nH")
+    # print(H)
     return H
 
 def activationz(z):
