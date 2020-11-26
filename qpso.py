@@ -40,7 +40,7 @@ def mlp_pinv(H, ye, C):
     H_ = np.transpose(H)
     yh = ye.dot(H)
     hh = (H.dot(H_) + np.eye(L) / C)
-    w2 = yh * np.pinv(hh)
+    w2 = yh * np.linalg.pinv(hh)
 
     return w2
 
