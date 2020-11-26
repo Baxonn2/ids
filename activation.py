@@ -13,9 +13,10 @@ def activation(x, w):
     """
     z = x.dot(w);
     print("[activation] z.shape", z.shape)
-    H = 1/(1+exp(-z))
+    H = 1./(1+exp(-z))
+    print("[activation] H.shape", H.shape)
     return H
 
 def activationz(z):
-    H = 1/(1+exp(-z))
+    H = 1./(1+exp(-z))
     return H
