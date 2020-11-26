@@ -89,6 +89,7 @@ def qpso(Xe, ye, X):
     N, D = Xe.shape
 
     for iter_ in range(MaxIter):
+        print("[qpso] iter_", iter_)
         new_pFitness, new_beta = fitness(Xe, ye, Nh, X, configs.C)
         pBest, pFitness, gBest, gFitness, wBest = upd_particle(X, pBest,
             pFitness, gBest, gFitness, new_pFitness, new_beta, wBest)
