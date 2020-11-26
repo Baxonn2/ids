@@ -39,10 +39,11 @@ def mlp_pinv(H, ye, C):
     N, L = H.shape
     print("[mlp_pinv] H.shape", H.shape)
     H_ = np.transpose(H)
-    yh = H_.dot(ye)
+    yh = ye.dot(H)
     print("[mlp_pinv] ye.shape", ye.shape)
     print("[mlp_pinv] yh.shape", yh.shape)
-    hh = (H.dot(H_) + np.eye(N) / C)
+    print("[mlp_pinv] H_.dot(H).shape", H_.dot(H).shape)
+    hh = (H_.dot(H) + np.eye(L) / C)
     w2 = yh.dot(np.linalg.pinv(hh))
 
     print("[mlp_pinv] w2.shape", w2.shape)
