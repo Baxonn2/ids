@@ -70,21 +70,23 @@ def fitness(Xe, ye, Nh, X, Cpinv):
 def upd_particle(X, pBest, pFitness, gBest, gFitness, new_pFitness, new_beta, wBest):
     idx = np.where(new_pFitness < pFitness) # FIXME: arreglar esto... hacer funcion find?
     
-    print("new_pFitness", new_pFitness, "\npFitness", pFitness)
-    print("idx[0].size", idx[0].size)
+    #print("new_pFitness", new_pFitness, "\npFitness", pFitness)
+    #print("idx[0].size", idx[0].size)
     if idx[0].size > 0: # Si es que se encontró una particula mejor
         for i, j in zip(idx[0], idx[1]):
             pFitness[i,j] = new_pFitness[j]
-            print("pBest.shape", pBest.shape)
-            print("X.shape", X.shape)
+            #print("pBest.shape", pBest.shape)
+            #print("X.shape", X.shape)
             pBest[j,:] = X[j,:]
 
-    new_gFitness, idx = min_(pFitness)  # TODO: programar esta funcion para encontrar el menor Fitnees (Retorna su valor y el indice)
+    # Obteniendo el mejor fitness
+    new_gFitness = np.amin(pFitness)
+    idx = np.where(pFitness == new_gFitness)[1][0]
 
     if new_gFitness < gFitness:
         gFitness = new_gFitness
         gBest = pBest[idx, :]
-        wBest = newBeta[idx, :]
+        wBest = new_beta[idx, :]
 
     return pBest, pFitness, gBest, gFitness, wBest
 
@@ -94,26 +96,34 @@ def qpso(Xe, ye, X, pBest, pFitness, gBest, gFitness, wBest, Alfa):
     MaxIter = configs.MaxIter
 
     # Inicializando MSE
-    MSE = np.full(MaxIter, -1)
+    MSE = np.full(MaxIter, -1.0)
 
     N, D = Xe.shape
+    N2, Dim = X.shape
 
     for iter_ in range(MaxIter):
+        print("Iteracion:", iter_)
         new_pFitness, new_beta = fitness(Xe, ye, Nh, X, configs.C)
         pBest, pFitness, gBest, gFitness, wBest = upd_particle(X, pBest,
             pFitness, gBest, gFitness, new_pFitness, new_beta, wBest)
 
         MSE[iter_] = gFitness
-        mBest = mean_column(pBest)      # TODO: Programar el promedio de las columnas
+        mBest = pBest.mean(1)      # TODO: Programar el promedio de las columnas
+        #print("Np", Np)
+        #print("X.shape", X.shape)
+        #print("pBest.shape",pBest.shape)
+        #print("Dim", Dim)
+        #print("mBest.shape", mBest.shape)
         for i in range(Np):
             for j in range(Dim):
+                #print(i,j)
                 phi = random()
                 u = random()
                 pBest[i,j] = phi * pBest[i, j] + (1 - phi) * gBest[j]
                 if random() > 0.5:
-                    X[i,j] = pBest[i, j] + Alfa[iter_] * abs(mBest[j] - X[i,j]) * log(1/u)
+                    X[i,j] = pBest[i, j] + Alfa[iter_] * abs(mBest[i] - X[i,j]) * log(1/u)
                 else:
-                    X[i,j] = pBest[i, j] - Alfa[iter_] * abs(mBest[j] - X[i,j]) * log(1/u)
+                    X[i,j] = pBest[i, j] - Alfa[iter_] * abs(mBest[i] - X[i,j]) * log(1/u)
 
     return (gBest, wBest, MSE)
 
