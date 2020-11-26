@@ -2,7 +2,7 @@ from pre_proceso import load_data
 from qpso import config_swarm, qpso
 import numpy as np
 
-xe, ye = load_data("Data/KDDTrain+_20Percent.txt")
+xe, ye = load_data("Data/KDDTrain_chica.txt")
 
 # Agregando unidad de bias (Para training)
 N, D = xe.shape

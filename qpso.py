@@ -36,12 +36,16 @@ def config_swarm(xe):
     return X
 
 def mlp_pinv(H, ye, C):
-    L, N = H.shape
+    N, L = H.shape
+    print("[mlp_pinv] H.shape", H.shape)
     H_ = np.transpose(H)
-    yh = ye.dot(H)
-    hh = (H.dot(H_) + np.eye(L) / C)
-    w2 = yh * np.linalg.pinv(hh)
+    yh = H_.dot(ye)
+    print("[mlp_pinv] ye.shape", ye.shape)
+    print("[mlp_pinv] yh.shape", yh.shape)
+    hh = (H.dot(H_) + np.eye(N) / C)
+    w2 = yh.dot(np.linalg.pinv(hh))
 
+    print("[mlp_pinv] w2.shape", w2.shape)
     return w2
 
 def fitness(Xe, ye, Nh, X, Cpinv):
@@ -49,13 +53,14 @@ def fitness(Xe, ye, Nh, X, Cpinv):
     Np = configs.Np
 
     for i in range(Np):
-        print("[fitness] X.shape", X.shape)
-        print("[fitness] X[i,:].shape", X[i,:].shape)
+        # print("[fitness] X.shape", X.shape)
+        # print("[fitness] X[i,:].shape", X[i,:].shape)
         p = X[i,:]
-        print("[fitness] D", D)
+        # print("[fitness] D", D)
         w1 = np.reshape(p, (D, Nh))
-        print("[fitness] w1.shape", w1.shape)
+        # print("[fitness] w1.shape", w1.shape)
         H = activation(Xe, w1)
+        print("[fitness] H.shape", H.shape)
         W2[i,:] = mlp_pinv(H, ye, configs.C)
         ze = W2[i,:] * H
         MSE[i] = sqrt(mse(ye, ze)) # Error cuadratico medio
@@ -85,11 +90,11 @@ def qpso(Xe, ye, X):
     # Inicializando MSE
     MSE = np.full(MaxIter, -1)
 
-    print("[qpso] Xe.shape", Xe.shape)
+    # print("[qpso] Xe.shape", Xe.shape)
     N, D = Xe.shape
 
     for iter_ in range(MaxIter):
-        print("[qpso] iter_", iter_)
+        # print("[qpso] iter_", iter_)
         new_pFitness, new_beta = fitness(Xe, ye, Nh, X, configs.C)
         pBest, pFitness, gBest, gFitness, wBest = upd_particle(X, pBest,
             pFitness, gBest, gFitness, new_pFitness, new_beta, wBest)
