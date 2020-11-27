@@ -6,7 +6,7 @@ import configs
 from activation import activation
 from metrica import metrica
 
-xe, ye = load_data("Data/KDDTrain_chica.txt")
+xe, ye = load_data("Data/KDDTrain+_20Percent.txt")
 
 # Agregando unidad de bias (Para training)
 N, D = xe.shape

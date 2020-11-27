@@ -2,8 +2,8 @@
 # idea de que cosas tienen que ir configuradas como parametro
 
 # Configuracion
-MaxIter = 100	# Cantidad de iteraciones
-Np = 12			# Cantidad de particulas
+MaxIter = 1000	# Cantidad de iteraciones
+Np = 20			# Cantidad de particulas
 Nh = 10			# Cantidad de nodos en al capa oculta
 
 C = 1			# Parametro de la pseudo - inversa
