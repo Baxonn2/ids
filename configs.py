@@ -1,10 +1,10 @@
 
 
 # Iteraciones de QPSO
-MaxIter = 500
+MaxIter = 3000
 # Numero de particulas
-Np = 30
+Np = 3
 # Numero de neuronas en la capa oculta
-Nh = 7
+Nh = 5
 # Parametro C
-C = 10**9
+C = 100

@@ -278,8 +278,8 @@ def load_param_config():
 
 
 if __name__ == '__main__':
-    data = "./csv_files/KDDTrain+sm.txt"
-    data_test = './csv_files/test.txt'
+    data = "./csv_files/KDDTrain+_20Percent.txt"
+    data_test = './csv_files/KDDTest+.txt'
     xe, ye = pp.load_data(data)
     xv, yv = pp.load_data(data_test)
     load_param_config()
