@@ -1,11 +1,13 @@
 import pandas as pd
 import numpy as np
 
+
 def load_data(path):
     result = pd.read_csv(path, header=None)
-    #print(result.info())
-    #result.iloc[:,[1]].astype(str)#.astype(int)
-    
+    print(result.shape)
+    # print(result.info())
+    # result.iloc[:,[1]].astype(str)#.astype(int)
+
     groups = {
         1: result.iloc[:, 1].unique(),
         2: result.iloc[:, 2].unique(),
@@ -14,8 +16,8 @@ def load_data(path):
     }
 
     def to_numbers(key: int, value):
-        # Caso en que se está tratando la salid
-        # La salida se trata como valor 1 en caso de que sea "normal" y 
+        #  Caso en que se está tratando la salid
+        # La salida se trata como valor 1 en caso de que sea "normal" y
         # -1 en cualquier otro caso
         if key == 41:
             if value == "normal":
@@ -29,9 +31,16 @@ def load_data(path):
     for k in groups.keys():
         result.iloc[:, k] = result.iloc[:, k].apply(lambda x: to_numbers(k, x))
 
-    #print("\nConvertido")
-    #print(result.info())
-    
+    # print("\nConvertido")
+    # print(result.info())
+
     Ye = result[41]
     result.drop(41, axis='columns', inplace=True)
-    return result, Ye
+    return result.transpose(), Ye
+
+
+if __name__ == '__main__':
+    Xe, Ye = load_data('./csv_files/KDDTrain+sm.txt')
+    print(Xe.shape)
+
+    print(Ye.shape)

@@ -1,11 +1,10 @@
-# Este archivo de configuración es temporal y será cambiado cuando se tenga una
-# idea de que cosas tienen que ir configuradas como parametro
 
-# Configuracion
-MaxIter = 1000	# Cantidad de iteraciones
-Np = 20			# Cantidad de particulas
-Nh = 10			# Cantidad de nodos en al capa oculta
 
-C = 1			# Parametro de la pseudo - inversa
-
-seed = 11231	# Semilla
+# Iteraciones de QPSO
+MaxIter = 500
+# Numero de particulas
+Np = 30
+# Numero de neuronas en la capa oculta
+Nh = 7
+# Parametro C
+C = 10**9
