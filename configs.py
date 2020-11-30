@@ -1,8 +1,13 @@
+import pandas as pd
+
+# Cargando configuraciones
+configs = pd.read_csv("configs.csv")
+
 # Iteraciones de QPSO
-MaxIter = 100
+MaxIter = configs["MaxIter"][0]
 # Numero de particulas
-Np = 3
+Np = configs["Np"][0]
 # Numero de neuronas en la capa oculta
-Nh = 5
+Nh = configs["Nh"][0]
 # Parametro C
-C = 100
+C = configs["C"][0]
