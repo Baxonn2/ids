@@ -277,22 +277,30 @@ def load_param_config():
     pass
 
 
+def save(w1, w2, file_path="pesos.npy"):
+    with open(file_path, 'wb') as pesos:
+        np.save(pesos, np.array([w1, w2], dtype=object))
+        #np.save(bias)
+
+def save_mse(mse):
+    np.savetxt("costos.csv", mse, delimiter=",", fmt="%f")
+
 if __name__ == '__main__':
     data = "./csv_files/KDDTrain+_20Percent.txt"
-    data_test = './csv_files/KDDTest+.txt'
     xe, ye = pp.load_data(data)
-    xv, yv = pp.load_data(data_test)
+    
     load_param_config()
     # Agrega fila a datos de entrada
+    
     Xe = np.vstack([xe, np.full((1, xe.shape[1]), 1)])
-    Xv = np.vstack([xv, np.full((1, xv.shape[1]), 1)])
 
     w1, w2, mse_ = qpso(Xe, ye)
-    D = Xe.shape[0]
-    wh = np.reshape(w1, (Nh, D))
-    H = activation(Xv, wh)
-    zv = np.matmul(w2, H)
 
-    accuracy, fscore = m.metrica(zv, yv)
+    # Guardando pesos
+    save(w1, w2)
+
+    # Colocar aqui la funcion de costos
+    save_mse(mse_)
+    
 
 

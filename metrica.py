@@ -22,6 +22,10 @@ def fscore(j, cm):
 	return 2 * precision(j, cm) * recall(j, cm) / (precision(j, cm) + recall(j, cm))
 
 
+def accuracy_fun(zv, yv):
+	acc = zv == yv
+	return acc.mean()
+
 def metrica(zv, yv):
 	zv[zv>=0] = 1
 	zv[zv<0] = -1
@@ -35,4 +39,7 @@ def metrica(zv, yv):
 		fscore_result.append(fscore(j, cm) * 100)
 	print("Fscore (%) =", fscore_result)
 
-	return 0, (1,1)
+	accuracy = accuracy_fun(zv, yv)
+	print("accuracy", accuracy)
+
+	return accuracy, fscore_result

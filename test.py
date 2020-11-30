@@ -1,19 +1,27 @@
-from forward import forward
+from activation import activation
+from metrica import metrica
+from pre_proceso import load_data
+import numpy as np
+from configs import *
 
-# TODO: esto debería cargar la data
-Xv, Yv = load_testing_data() #* Xv son los valores de entrada y el Yv son las etiquetas
+def load_w(file_path="pesos.npy"):
+    return np.load(file_path, allow_pickle=True)
 
-# TODO: esto debería preparar los pesos
-w1, bias, w2 = load_pesos()
 
-# Calculando data de salida del IDS
-z = forward(Xv, w1, bias, w2)
+def test(file_path):
+    # Cargando data
+    data_test = "./csv_files/KDDTest+.txt"
+    xv, yv = load_data(data_test)
+    Xv = np.vstack([xv, np.full((1, xv.shape[1]), 1)])
 
-# Obteniendo metricas
-accuracy, fscore = metrica(z, Yv)
+    w1, w2 = load_w()
 
-# Guardando las metricas resultantes
-# TODO: Esto debería guardar metrica.csv
-savetxt('metrica.csv', accuracy, fscore) 
-# El formato del archivo tiene que ser:
-# accuracy, fscore_clase_1, fscore_clase_2
+    D = Xv.shape[0]
+    wh = np.reshape(w1, (Nh, D))
+    H = activation(wh, Xv)
+    zv = np.matmul(w2, H)
+
+    accuracy, fscore = metrica(zv, yv)
+
+if __name__ == "__main__":
+    test('./csv_files/KDDTest+.txt')
