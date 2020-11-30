@@ -35,8 +35,8 @@ def metrica(zv, yv):
 
 	# Obteniendo fscores
 	fscore_result = []
-	for j in (-1, 1):
-		fscore_result.append(fscore(j, cm) * 100)
+	for j in (1, -1):
+		fscore_result.append(fscore(j, cm))
 	print("Fscore (%) =", fscore_result)
 
 	accuracy = accuracy_fun(zv, yv)

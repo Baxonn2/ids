@@ -7,6 +7,9 @@ from configs import *
 def load_w(file_path="pesos.npy"):
     return np.load(file_path, allow_pickle=True)
 
+def save(accuracy, fscore):
+    with open("metricas.csv", "w") as f:
+        f.write(f"{accuracy},{fscore[0]},{fscore[1]}")
 
 def test(file_path):
     # Cargando data
@@ -22,6 +25,8 @@ def test(file_path):
     zv = np.matmul(w2, H)
 
     accuracy, fscore = metrica(zv, yv)
+
+    save(accuracy, fscore)
 
 if __name__ == "__main__":
     test('./csv_files/KDDTest+.txt')
