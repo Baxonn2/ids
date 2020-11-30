@@ -36,6 +36,10 @@ def load_data(path):
 
     Ye = result[41]
     result.drop(41, axis='columns', inplace=True)
+
+    # Eliminando la ultima columna
+    result.drop(result.columns[[-1,]], axis=1, inplace=True) 
+    
     return result.transpose(), Ye
 
 
