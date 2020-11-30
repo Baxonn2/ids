@@ -13,7 +13,7 @@ def save(accuracy, fscore):
 
 def test(file_path):
     # Cargando data
-    data_test = "./csv_files/KDDTest+.txt"
+    data_test = "./csv_files/KDDTest.txt"
     xv, yv = load_data(data_test)
     Xv = np.vstack([xv, np.full((1, xv.shape[1]), 1)])
 

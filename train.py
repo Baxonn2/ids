@@ -286,7 +286,7 @@ def save_mse(mse):
     np.savetxt("costos.csv", mse, delimiter=",", fmt="%f")
 
 if __name__ == '__main__':
-    data = "./csv_files/KDDTrain+_20Percent.txt"
+    data = "./csv_files/KDDTrain.txt"
     xe, ye = pp.load_data(data)
     
     load_param_config()
